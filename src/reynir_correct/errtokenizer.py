@@ -104,6 +104,27 @@ MONTH_NAMES_CAPITALIZED = (
     "Desember",
 )
 
+ACRONYMS = (    # HÍ og HA ganga kannski ekki hér
+    "Dv",
+    "Rúv",
+    "Byko",
+    "Íbv",
+    "Pga",
+    "Em",
+    "Ví",
+    "Mr",
+    "Mh",
+    "Ms"
+    "Hr",
+    "Ísí",
+    "Ksí",
+    "Kr",
+    "Fh",
+    "Ía",
+    "Ka",
+    "Hk"
+)
+
 # Word categories and their names
 POS = {
     "lo": "lýsingarorð",
@@ -1572,6 +1593,8 @@ def fix_capitalization(
             if state != "in_sentence":
                 # An uppercase word at the beginning of a sentence can't be wrong
                 return False
+            if word in ACRONYMS:
+                return True
             # Danskur -> danskur
             rev_word = word.lower()
             lower = False
@@ -1651,6 +1674,16 @@ def fix_capitalization(
                         CapitalizationError(
                             "002",
                             "Orð á að byrja á hástaf: '{0}'".format(original_txt),
+                        )
+                    )
+                elif token.txt in ACRONYMS:
+                    original_txt = token.txt
+                    w, m = db.lookup_word(token.txt.upper(), False)
+                    token = token_ctor.Word(w, m, token=token)
+                    token.set_error(
+                        CapitalizationError(
+                            "006",
+                            "Hánefni á að samanstanda af hástöfum: '{0}'".format(original_txt),
                         )
                     )
                 else:
