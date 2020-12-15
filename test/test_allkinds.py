@@ -802,6 +802,19 @@ def test_capitalization(verbose=False):
     #assert g[23].error_code == 'Z001'   #kalda                 #assertionError
     #assert g[24].error_code == 'Z001'   #stríðið               #assertionError
 
+def test_acronyms(verbose=False):
+
+    g = rc.tokenize(
+        "Hún skrifar fyrir Dv og Rúv."
+    )
+    g = list(g)
+    if verbose: dump(g)
+    s = normalize(g)
+    assert "DV" in s
+    assert "RÚV" in s
+    assert g[4].error_code == 'Z006'    #DV
+    assert g[6].error_code == 'Z006'    #RÚV
+
 def test_inflectional_errors(verbose=False):
     # beygingarvillur
     # sama og test_error_forms í test_tokenizer.py
